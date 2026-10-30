@@ -20,4 +20,12 @@ class MovimientoRepositoryEnMemoria : MovimientoRepository {
     // removeAll devuelve true si borró algo
     override suspend fun eliminar(id: Int): Boolean =
         movimientos.removeAll { it.id == id }
+
+    // indexOfFirst devuelve la posición del primero que cumpla, o -1 si no hay
+    override suspend fun actualizar(movimiento: Movimiento): Boolean {
+        val posicion = movimientos.indexOfFirst { it.id == movimiento.id }
+        if (posicion == -1) return false
+        movimientos[posicion] = movimiento
+        return true
+    }
 }

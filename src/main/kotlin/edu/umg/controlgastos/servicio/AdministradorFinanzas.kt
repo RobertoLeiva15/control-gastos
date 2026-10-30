@@ -49,10 +49,19 @@ class AdministradorFinanzas(private val repositorio: MovimientoRepository) {
         return null
     }
 
-    // ---------- NUEVO: funciones para las pantallas de Inicio, Historial y Resumen ----------
 
-    // Borra un movimiento por su id; true si lo encontró
-    suspend fun eliminar(id: Int): Boolean = repositorio.eliminar(id)
+    // valida y guarda los cambios de un movimiento existente.
+    // Devuelve null si salió bien, o el mensaje de error
+    suspend fun actualizar(m: Movimiento): String? {
+        val error = validar(m)
+        if (error != null) return error
+        if (!repositorio.actualizar(m)) return "No se encontró el movimiento"
+        return null
+    }
+
+    // busca un movimiento por su id (para poder editarlo)
+    suspend fun buscarPorId(id: Int): Movimiento? =
+        repositorio.listar().find { it.id == id }
 
     // Solo los movimientos de un mes ("2026-10"), del más nuevo al más viejo
     suspend fun movimientosDelMes(mes: String): List<Movimiento> =
